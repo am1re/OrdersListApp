@@ -10,10 +10,6 @@
       <Folder Include="Orders\Commands\Update" />
       <Folder Include="Orders\Queries\GetDetail" />
       <Folder Include="Orders\Queries\GetList" />
-      <Folder Include="Products\Commands\Delete" />
-      <Folder Include="Products\Commands\Update" />
-      <Folder Include="Products\Queries\GetDetail" />
-      <Folder Include="Products\Queries\GetList" />
       <Folder Include="Statuses\Commands\Create" />
       <Folder Include="Statuses\Commands\Delete" />
       <Folder Include="Statuses\Commands\Update" />
@@ -22,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="9.0.0" />
       <PackageReference Include="FluentValidation" Version="8.6.2" />
       <PackageReference Include="MediatR" Version="8.0.1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />

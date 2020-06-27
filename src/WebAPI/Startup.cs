@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-using Application;
 using Application.Common.Behaviours;
 using Application.Common.Interfaces;
-using Application.Products.Commands.Create;
+using Application.Common.Mappings;
+using AutoMapper;
 using FluentValidation;
 using Infrastructure;
 using MediatR;
@@ -35,6 +30,7 @@ namespace WebAPI
             
             services.AddScoped<IAppDbContext>(p => p.GetService<AppDbContext>());
             
+            services.AddAutoMapper(typeof(MappingProfile).Assembly);
             services.AddMediatR(typeof(RequestValidationBehavior<,>).Assembly);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
 

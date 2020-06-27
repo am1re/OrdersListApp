@@ -41,7 +41,9 @@ namespace WebAPI.Common
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             var code = HttpStatusCode.InternalServerError;
-            var fields = new Dictionary<string, string[]>();
+            
+            object fields = null;
+            var message = exception.Message;
 
             switch (exception)
             {
@@ -67,15 +69,9 @@ namespace WebAPI.Common
             
             var result = JsonConvert.SerializeObject(new
             {
-                error = new
-                {
-                    message = exception.Message,
-                    fields,
-                }
+                error = new { message, fields }
             });
-
             return context.Response.WriteAsync(result);
         }
     }
-
 }
