@@ -8,7 +8,7 @@ namespace Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<OrderDetail> builder)
         {
-            throw new System.NotImplementedException();
+            builder.HasKey(o => new {o.OrderId, o.ProductId});
         }
     }
 }

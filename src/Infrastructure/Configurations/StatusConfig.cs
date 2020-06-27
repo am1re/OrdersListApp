@@ -8,7 +8,7 @@ namespace Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Status> builder)
         {
-            throw new System.NotImplementedException();
+            
         }
     }
 }
