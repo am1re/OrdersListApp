@@ -1,4 +1,4 @@
-﻿using Application.Common.Mappings;
+﻿using Application.Common.Mapping;
 using Domain.Entities;
 
 namespace Application.Products.Queries

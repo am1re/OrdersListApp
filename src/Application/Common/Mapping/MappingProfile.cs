@@ -1,10 +1,10 @@
-﻿﻿using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 using AutoMapper;
 using AutoMapper.Configuration.Internal;
 
-namespace Application.Common.Mappings
+namespace Application.Common.Mapping
 {
     public class MappingProfile : Profile
     {

@@ -1,6 +1,6 @@
 ﻿﻿using AutoMapper;
 
-namespace Application.Common.Mappings
+ namespace Application.Common.Mapping
 {
     public interface IMapFrom<T>
     {

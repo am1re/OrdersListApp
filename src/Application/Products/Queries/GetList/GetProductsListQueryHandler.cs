@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
-using Application.Common.ViewModels;
+using Application.Common.VmWrappers;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;

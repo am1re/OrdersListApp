@@ -1,7 +1,7 @@
 using System.Text;
 using Application.Common.Behaviours;
 using Application.Common.Interfaces;
-using Application.Common.Mappings;
+using Application.Common.Mapping;
 using AutoMapper;
 using FluentValidation;
 using Infrastructure;

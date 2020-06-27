@@ -1,4 +1,4 @@
-namespace Application.Common.ViewModels
+namespace Application.Common.VmWrappers
 {
     public class EntityDetailVm<T>
     {

@@ -1,4 +1,4 @@
-﻿using Application.Common.ViewModels;
+﻿using Application.Common.VmWrappers;
 
 namespace Application.Products.Queries.GetDetail
 {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Application.Common.ViewModels
+namespace Application.Common.VmWrappers
 {
     public class EntitiesListVm<T>
     {
