@@ -15,14 +15,14 @@ namespace WebAPI.Controllers
 {
     public class OrdersController : BaseController
     {
-        [HttpGet("{id}/items")]
+        [HttpGet("{id}/Items")]
         public async Task<ActionResult<OrderItemsListVm>> GetItemsByOrderId(int id, [FromQuery] GetOrderItemsListQuery query)
         {
             query.OrderId = id;
             return Ok(await Mediator.Send(query));
         }        
         
-        [HttpPost("{id}/items")]
+        [HttpPost("{id}/Items")]
         public async Task<ActionResult<OrderItemDetailVm>> CreateItemByOrderId(int id, [FromBody] CreateOrderItemCommand command)
         {
             command.OrderId = id;
@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
         
-        [HttpPut("{id}/items")]
+        [HttpPut("{id}/Items")]
         public async Task<ActionResult<OrderItemDetailVm>> UpdateItemByOrderId(int id, [FromBody] UpdateOrderItemCommand command)
         {
             command.OrderId = id;
@@ -40,7 +40,7 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
         
-        [HttpDelete("{id}/items")]
+        [HttpDelete("{id}/Items")]
         public async Task<IActionResult> DeleteItemByOrderId(int id, [FromBody] DeleteOrderItemCommand command)
         {
             command.OrderId = id;
