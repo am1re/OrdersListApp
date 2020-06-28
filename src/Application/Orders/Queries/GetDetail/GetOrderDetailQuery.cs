@@ -2,7 +2,7 @@
 
 namespace Application.Orders.Queries.GetDetail
 {
-    public class GetOrderItemQuery : IRequest<OrderItemVm>
+    public class GetOrderDetailQuery : IRequest<OrderDetailVm>
     {
         public int Id { get; set; }
     }

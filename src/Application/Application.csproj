@@ -5,9 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Orders\Commands\Create" />
-      <Folder Include="Orders\Commands\Delete" />
-      <Folder Include="Orders\Commands\Update" />
       <Folder Include="Statuses\Commands\Create" />
       <Folder Include="Statuses\Commands\Delete" />
       <Folder Include="Statuses\Commands\Update" />

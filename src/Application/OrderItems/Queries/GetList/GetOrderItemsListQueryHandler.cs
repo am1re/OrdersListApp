@@ -1,10 +1,12 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.VmWrappers;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +25,9 @@ namespace Application.OrderItems.Queries.GetList
 
         public async Task<OrderItemsListVm> Handle(GetOrderItemsListQuery request, CancellationToken token)
         {
+            if (request.OrderId.HasValue && !_context.Orders.Any(o => o.Id == request.OrderId))
+                throw new NotFoundException(nameof(Order), request.OrderId);
+
             var query = _context.OrderItems.AsQueryable();
             
             query = request.OrderId.HasValue

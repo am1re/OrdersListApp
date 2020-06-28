@@ -5,7 +5,7 @@ namespace Application.Common.Exceptions
 {
     public class BadRequestException : Exception
     {
-        public Dictionary<string, string[]> Failures { get; } = new Dictionary<string, string[]>();
+        public Dictionary<string, string[]> Failures { get; }
 
         public BadRequestException() : base("One or more validation failures have occurred.")
         {

@@ -18,14 +18,20 @@ using System.Threading.Tasks;
             _context = context;
         }
         
-        public async Task<(int orderId, int productId)> Handle(CreateOrderItemCommand request, CancellationToken cancellationToken)
+        public async Task<(int orderId, int productId)> Handle(CreateOrderItemCommand request, CancellationToken token)
         {
-            var product = await _context.Products.Where(e => e.Id == request.ProductId)
-                .SingleOrDefaultAsync(cancellationToken);
+            var orderExists = _context.Orders.Any(e => e.Id == request.OrderId);
+            if (!orderExists) 
+                throw new NotFoundException(nameof(Order), request.OrderId);
             
-            if(product == null)
+            var product = await _context.Products.Where(e => e.Id == request.ProductId).SingleOrDefaultAsync(token);
+            if (product == null)
                 throw new NotFoundException(nameof(Product), request.ProductId);
-                
+
+            var itemExists = _context.OrderItems.Any(o => o.OrderId == request.OrderId && o.ProductId == request.ProductId);
+            if (itemExists) 
+                throw new ConflictDataException($"Order Item with ID ({request.ProductId},{request.OrderId}) already exists.");
+
             var entity = new OrderItem
             {
                 OrderId = request.OrderId,
@@ -34,8 +40,8 @@ using System.Threading.Tasks;
                 Quantity = request.Quantity
             };
             
-            await _context.OrderItems.AddAsync(entity, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.OrderItems.AddAsync(entity, token);
+            await _context.SaveChangesAsync(token);
 
             return (entity.OrderId, entity.ProductId);
         }

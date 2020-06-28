@@ -6,7 +6,7 @@ namespace Application.Common.Exceptions
 {
     public class ConflictDataException : Exception
     {
-        public Dictionary<string, string[]> Failures { get; } = new Dictionary<string, string[]>();
+        public Dictionary<string, string[]> Failures { get; }
 
         public ConflictDataException() : base("One or more data conflicts have occurred.")
         {
@@ -18,7 +18,10 @@ namespace Application.Common.Exceptions
 
         public ConflictDataException(string fieldName, string message) : this()
         {
-            Failures.Add(fieldName, Enumerable.Repeat(message, 1 ).ToArray());
+            Failures = new Dictionary<string, string[]>
+            {
+                { fieldName, Enumerable.Repeat(message, 1).ToArray() }
+            };
         }
         
         public ConflictDataException(Dictionary<string, string[]> failures) : this()

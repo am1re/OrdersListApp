@@ -2,7 +2,7 @@
 
 namespace Application.Orders.Queries.GetDetail
 {
-    public class GetOrderItemQueryValidator : AbstractValidator<GetOrderItemQuery>
+    public class GetOrderItemQueryValidator : AbstractValidator<GetOrderDetailQuery>
     {
         public GetOrderItemQueryValidator()
         {

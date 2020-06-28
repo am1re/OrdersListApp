@@ -26,8 +26,8 @@ namespace WebAPI
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(c =>
-                c.UseInMemoryDatabase("AppDb"));
+            services.AddDbContext<AppDbContext>(o =>
+                o.UseInMemoryDatabase("AppDb"));
             
             services.AddScoped<IAppDbContext>(p => p.GetService<AppDbContext>());
             

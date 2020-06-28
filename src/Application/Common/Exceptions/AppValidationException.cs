@@ -7,7 +7,7 @@ namespace Application.Common.Exceptions
 {
     public class AppValidationException : Exception
     {
-        public Dictionary<string, string[]> Failures { get; } = new Dictionary<string, string[]>();
+        public Dictionary<string, string[]> Failures { get; }
 
         public AppValidationException() : base("One or more validation failures have occurred.")
         {
@@ -20,6 +20,8 @@ namespace Application.Common.Exceptions
 
         public AppValidationException(IList<ValidationFailure> failures) : this()
         {
+            Failures = new Dictionary<string, string[]>();
+            
             var propertyNames = failures
                 .Select(e => e.PropertyName)
                 .Distinct();

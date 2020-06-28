@@ -11,25 +11,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Orders.Queries.GetDetail
 {
-    public class GetOrderItemQueryHandler : IRequestHandler<GetOrderItemQuery, OrderItemVm>
+    public class GetOrderDetailQueryHandler : IRequestHandler<GetOrderDetailQuery, OrderDetailVm>
     {
         private readonly IAppDbContext _context;
         private readonly IMapper _mapper;
 
-        public GetOrderItemQueryHandler(IAppDbContext context, IMapper mapper)
+        public GetOrderDetailQueryHandler(IAppDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task<OrderItemVm> Handle(GetOrderItemQuery request, CancellationToken cancellationToken)
+        public async Task<OrderDetailVm> Handle(GetOrderDetailQuery request, CancellationToken cancellationToken)
         {
             var res = await _context.Orders
                 .Where(e => e.Id == request.Id)
                 .ProjectTo<OrderDto>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync(cancellationToken);
                 
-            return new OrderItemVm
+            return new OrderDetailVm
             {
                 Data = res ?? throw new NotFoundException(nameof(Order), request.Id)
             };

@@ -4,6 +4,9 @@ using Application.OrderItems.Commands.Delete;
 using Application.OrderItems.Commands.Update;
 using Application.OrderItems.Queries.GetDetail;
 using Application.OrderItems.Queries.GetList;
+using Application.Orders.Commands.Create;
+using Application.Orders.Commands.Delete;
+using Application.Orders.Commands.Update;
 using Application.Orders.Queries.GetDetail;
 using Application.Orders.Queries.GetList;
 using Microsoft.AspNetCore.Mvc;
@@ -13,14 +16,14 @@ namespace WebAPI.Controllers
     public class OrdersController : BaseController
     {
         [HttpGet("{id}/items")]
-        public async Task<ActionResult<OrderItemsListVm>> GetDetailsById(int id, [FromQuery] GetOrderItemsListQuery query)
+        public async Task<ActionResult<OrderItemsListVm>> GetItemsByOrderId(int id, [FromQuery] GetOrderItemsListQuery query)
         {
             query.OrderId = id;
             return Ok(await Mediator.Send(query));
         }        
         
         [HttpPost("{id}/items")]
-        public async Task<ActionResult<OrderItemDetailVm>> CreateItemById(int id, [FromBody] CreateOrderItemCommand command)
+        public async Task<ActionResult<OrderItemDetailVm>> CreateItemByOrderId(int id, [FromBody] CreateOrderItemCommand command)
         {
             command.OrderId = id;
             var (orderId, productId) = await Mediator.Send(command);
@@ -29,7 +32,7 @@ namespace WebAPI.Controllers
         }
         
         [HttpPut("{id}/items")]
-        public async Task<ActionResult<OrderItemDetailVm>> UpdateItemById(int id, [FromBody] UpdateOrderItemCommand command)
+        public async Task<ActionResult<OrderItemDetailVm>> UpdateItemByOrderId(int id, [FromBody] UpdateOrderItemCommand command)
         {
             command.OrderId = id;
             var (orderId, productId) = await Mediator.Send(command);
@@ -38,13 +41,12 @@ namespace WebAPI.Controllers
         }
         
         [HttpDelete("{id}/items")]
-        public async Task<IActionResult> DeleteItemById(int id, [FromBody] DeleteOrderItemCommand command)
+        public async Task<IActionResult> DeleteItemByOrderId(int id, [FromBody] DeleteOrderItemCommand command)
         {
             command.OrderId = id;
             await Mediator.Send(command);
             return NoContent();
         }
-        
         
         [HttpGet]
         public async Task<ActionResult<OrdersListVm>> GetAll([FromQuery] GetOrdersListQuery query)
@@ -53,29 +55,32 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<OrderItemVm>> Get(int id)
+        public async Task<ActionResult<OrderDetailVm>> Get(int id)
         {
-            return Ok(await Mediator.Send(new GetOrderItemQuery { Id = id }));
+            return Ok(await Mediator.Send(new GetOrderDetailQuery { Id = id }));
         }
         
         [HttpPost]
-        public async Task<IActionResult> Create()
+        public async Task<ActionResult<OrderDetailVm>> Create([FromBody] CreateOrderCommand command)
         {
-            // TODO: implement
-            return Ok();
+            var resultId = await Mediator.Send(command);
+            var result = await Mediator.Send(new GetOrderDetailQuery { Id = resultId });
+            return Ok(result);
         }
         
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id)
+        public async Task<ActionResult<OrderDetailVm>> Update(int id, [FromBody] UpdateOrderCommand command)
         {
-            // TODO: implement
-            return Ok(id);
+            command.Id = id;
+            var resultId = await Mediator.Send(command);
+            var result = await Mediator.Send(new GetOrderDetailQuery { Id = resultId });
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            // TODO: implement
+            await Mediator.Send(new DeleteOrderCommand { Id = id });
             return NoContent();
         }
     }
