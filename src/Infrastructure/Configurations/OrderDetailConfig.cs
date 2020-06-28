@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations
 {
-    public class OrderDetailConfig : IEntityTypeConfiguration<OrderDetail>
+    public class OrderItemConfig : IEntityTypeConfiguration<OrderItem>
     {
-        public void Configure(EntityTypeBuilder<OrderDetail> builder)
+        public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
             builder.HasKey(o => new {o.OrderId, o.ProductId});
         }

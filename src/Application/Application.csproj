@@ -8,8 +8,6 @@
       <Folder Include="Orders\Commands\Create" />
       <Folder Include="Orders\Commands\Delete" />
       <Folder Include="Orders\Commands\Update" />
-      <Folder Include="Orders\Queries\GetDetail" />
-      <Folder Include="Orders\Queries\GetList" />
       <Folder Include="Statuses\Commands\Create" />
       <Folder Include="Statuses\Commands\Delete" />
       <Folder Include="Statuses\Commands\Update" />

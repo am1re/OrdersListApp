@@ -8,7 +8,7 @@ namespace Application.Common.Interfaces
     public interface IAppDbContext
     {
         DbSet<Order> Orders { get; set; }
-        DbSet<OrderDetail> OrderDetails { get; set; }
+        DbSet<OrderItem> OrderItems { get; set; }
         DbSet<Product> Products { get; set; }
         DbSet<Status> Statuses { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);

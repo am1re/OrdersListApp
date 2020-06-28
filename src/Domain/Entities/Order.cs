@@ -11,6 +11,6 @@ namespace Domain.Entities
         public DateTime? DateModified { get; set; }
 
         public Status Status { get; set; }
-        public ICollection<OrderDetail> OrderDetails { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
     }
 }
