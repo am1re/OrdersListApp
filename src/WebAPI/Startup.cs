@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using WebAPI.Common;
 
 namespace WebAPI
@@ -47,7 +48,12 @@ namespace WebAPI
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
-                options.InvalidModelStateResponseFactory = InvalidModelStateResponseHelper.InvalidModelStateResponse;
+                options.InvalidModelStateResponseFactory = AppInvalidModelStateResponse.Handle;
+            });
+            
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Orders List App API", Version = "v1" });
             });
             
             _services = services;
@@ -62,6 +68,10 @@ namespace WebAPI
                 RegisteredServicesPage(app);
             }
             app.UseAppExceptionHandler();
+            
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Orders List App API v1"));
             
             app.UseRouting();
 

@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Common
 {
-    public static class InvalidModelStateResponseHelper
+    public static class AppInvalidModelStateResponse
     {
-        public static IActionResult InvalidModelStateResponse(ActionContext actionContext)
+        public static IActionResult Handle(ActionContext actionContext)
         {
             var errors = actionContext.ModelState
                 .Where(x => x.Value.Errors.Count > 0)
