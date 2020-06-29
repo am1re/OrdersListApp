@@ -16,7 +16,7 @@
         </v-col>
         <v-col>
           <v-text-field
-            v-if="editingItem == item.id"
+            v-if="editingItemId == item.id"
             v-model="orderItem.quantity"
             hide-details
             single-line
@@ -24,12 +24,19 @@
           />
           <p v-else>{{orderItem.quantity}}</p>
         </v-col>
+        <v-col>
+          <v-icon
+            v-if="editingItemId == item.id"
+            small
+            @click="deleteOrderItem(item.id, orderItem.id)"
+          >mdi-delete</v-icon>
+        </v-col>
       </v-row>
     </template>
 
     <template v-slot:item.status="props">
       <v-select
-        v-if="editingItem == props.item.id"
+        v-if="editingItemId == props.item.id"
         :items="statuses"
         v-model="props.item.status"
         single-line
@@ -40,15 +47,17 @@
     </template>
 
     <template v-slot:item.actions="{ item }">
-      <div v-if="editingItem == item.id">
-        <v-icon small class="mr-2" @click="editItem(item)">mdi-content-save</v-icon>
+      <div v-if="editingItemId == item.id">
+        <v-icon small class="mr-2" @click="saveItem(item)">mdi-content-save</v-icon>
+      </div>
+      <div v-if="editingItemId == item.id">
+        <v-icon small class="mr-2" @click="cancelEditItem(item)">mdi-close-circle</v-icon>
       </div>
       <div v-else>
         <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
         <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
       </div>
     </template>
-    
   </v-data-table>
 </template>
 
@@ -56,16 +65,38 @@
 export default {
   name: "Orders",
   components: {},
+  mounted() {},
   methods: {
     editItem: function(item) {
-      this.editingItem = this.editingItem != item.id ? item.id : -1;
+      this.cachedItem = JSON.parse(JSON.stringify(item))
+      this.editingItemId = item.id;
+    },
+    saveItem: function() {
+      this.editingItemId = -1;
+      this.cachedItem = null;
+    },
+    cancelEditItem: function(item) {
+      let index = this.orders.findIndex(x => x.id === item.id);
+      this.orders[index] = Object.assign(this.orders[index], this.cachedItem);
+      
+      this.editingItemId = -1;
+      this.cachedItem = null;
     },
     deleteItem: function(item) {
-      console.log(item);
+      let index = this.orders.findIndex(x => x.id === item.id);
+      this.orders.splice(index, 1);
+    },
+    deleteOrderItem: function(orderId, productId) {
+      let orderIndex = this.orders.findIndex(x => x.id === orderId);
+      let prodIndex = this.orders[orderIndex].orderItems.findIndex(
+        x => x.id === productId
+      );
+      this.orders[orderIndex].orderItems.splice(prodIndex, 1);
     }
   },
   data: () => ({
-    editingItem: -1,
+    editingItemId: -1,
+    cachedItem: null,
     statuses: [
       "Pending",
       "Processing",
