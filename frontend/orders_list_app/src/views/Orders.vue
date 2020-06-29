@@ -1,10 +1,10 @@
 <template>
-  <v-data-table :headers="headers" :items="orders" item-key="id" show-expand>
+  <v-data-table :headers="headers" :items="orders.orders" item-key="id" show-expand>
     <template v-slot:expanded-item="{ item }">
       <v-row v-for="orderItem in item.orderItems" :key="orderItem.id">
-        <!-- <v-col>
-          <v-img :src="orderItem.photoUrl"></v-img>
-        </v-col>-->
+        <v-col>
+          <v-img :src="orderItem.photoUrl" max-height="120px"></v-img>
+        </v-col>
         <v-col>
           <p>{{orderItem.name}}</p>
         </v-col>
@@ -12,7 +12,7 @@
           <p>{{orderItem.id}}</p>
         </v-col>
         <v-col>
-          <p>{{orderItem.price}}</p>
+          <p>{{orderItem.productPrice}}</p>
         </v-col>
         <v-col>
           <v-text-field
@@ -62,13 +62,20 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "Orders",
   components: {},
-  mounted() {},
+  computed: {
+    ...mapState(["orders"])
+  },
+  created() {
+    this.$store.dispatch("orders/fetchAll")
+  },
   methods: {
     editItem: function(item) {
-      this.cachedItem = JSON.parse(JSON.stringify(item))
+      this.cachedItem = JSON.parse(JSON.stringify(item));
       this.editingItemId = item.id;
     },
     saveItem: function() {
@@ -76,22 +83,22 @@ export default {
       this.cachedItem = null;
     },
     cancelEditItem: function(item) {
-      let index = this.orders.findIndex(x => x.id === item.id);
-      this.orders[index] = Object.assign(this.orders[index], this.cachedItem);
-      
+      let index = this.orders.orders.findIndex(x => x.id === item.id);
+      this.orders.orders[index] = Object.assign(this.orders.orders[index], this.cachedItem);
+
       this.editingItemId = -1;
       this.cachedItem = null;
     },
     deleteItem: function(item) {
-      let index = this.orders.findIndex(x => x.id === item.id);
-      this.orders.splice(index, 1);
+      let index = this.orders.orders.findIndex(x => x.id === item.id);
+      this.orders.orders.splice(index, 1);
     },
     deleteOrderItem: function(orderId, productId) {
-      let orderIndex = this.orders.findIndex(x => x.id === orderId);
-      let prodIndex = this.orders[orderIndex].orderItems.findIndex(
+      let orderIndex = this.orders.orders.findIndex(x => x.id === orderId);
+      let prodIndex = this.orders.orders[orderIndex].orderItems.findIndex(
         x => x.id === productId
       );
-      this.orders[orderIndex].orderItems.splice(prodIndex, 1);
+      this.orders.orders[orderIndex].orderItems.splice(prodIndex, 1);
     }
   },
   data: () => ({
@@ -105,31 +112,6 @@ export default {
       "Cancelled",
       "Refunded",
       "Archive"
-    ],
-    orders: [
-      {
-        id: 5,
-        status: "Pending",
-        total: "$ 100.42",
-        dateCreated: "27/01/2020",
-        dateModified: "27/01/2020",
-        orderItems: [
-          {
-            id: 1,
-            name: "Potato",
-            price: 54.3,
-            photoUrl: "http://dummyimage.com/250x250.png/ff4444/ffffff",
-            quantity: 5
-          },
-          {
-            id: 2,
-            name: "Apple",
-            price: 31.2,
-            photoUrl: "http://dummyimage.com/250x250.png/ff4444/ffffff",
-            quantity: 1
-          }
-        ]
-      }
     ],
     headers: [
       {

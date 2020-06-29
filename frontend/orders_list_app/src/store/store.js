@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import orders from './orders'
+import products from './products'
+
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
@@ -11,6 +14,8 @@ const store = new Vuex.Store({
   actions: {
   },
   modules: {
+    orders,
+    products
   }
 })
 

@@ -65,10 +65,11 @@ namespace WebAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseCors(b => b.AllowAnyOrigin());
                 RegisteredServicesPage(app);
             }
             app.UseAppExceptionHandler();
-            
+
             app.UseSwagger();
 
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Orders List App API v1"));
