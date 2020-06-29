@@ -51,7 +51,6 @@ namespace Infrastructure
                 new Status { Name = "Processing" },
                 new Status { Name = "On-hold" },
                 new Status { Name = "Completed" },
-                new Status { Name = "Completed" },
                 new Status { Name = "Cancelled" },
                 new Status { Name = "Refunded" },
                 new Status { Name = "Archive" }
