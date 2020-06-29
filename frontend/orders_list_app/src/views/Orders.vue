@@ -1,43 +1,54 @@
 <template>
-  <v-data-table
-    v-model="selected"
-    :headers="headers"
-    :items="orders"
-    item-key="id"
-    class="elevation-1"
-    show-expand
-  >
+  <v-data-table :headers="headers" :items="orders" item-key="id" show-expand>
     <template v-slot:expanded-item="{ item }">
       <v-row v-for="orderItem in item.orderItems" :key="orderItem.id">
         <!-- <v-col>
           <v-img :src="orderItem.photoUrl"></v-img>
         </v-col>-->
-        <v-col>{{orderItem.name}}</v-col>
-        <v-col>{{orderItem.id}}</v-col>
-        <v-col>{{orderItem.price}}</v-col>
         <v-col>
-          <v-text-field v-model="orderItem.quantity" hide-details single-line type="number" />
-          {{orderItem.quantity}}
+          <p>{{orderItem.name}}</p>
+        </v-col>
+        <v-col>
+          <p>{{orderItem.id}}</p>
+        </v-col>
+        <v-col>
+          <p>{{orderItem.price}}</p>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-if="editingItem == item.id"
+            v-model="orderItem.quantity"
+            hide-details
+            single-line
+            type="number"
+          />
+          <p v-else>{{orderItem.quantity}}</p>
         </v-col>
       </v-row>
     </template>
 
     <template v-slot:item.status="props">
-      <v-edit-dialog :return-value.sync="props.item.status" large persistent>
-        <div>{{ props.item.status }}</div>
-        <template v-slot:input>
-          <div class="mt-4 title">Update Status</div>
-        </template>
-        <template v-slot:input>
-          <v-select :items="statuses" v-model="props.item.status" single-line dense autofocus></v-select>
-        </template>
-      </v-edit-dialog>
+      <v-select
+        v-if="editingItem == props.item.id"
+        :items="statuses"
+        v-model="props.item.status"
+        single-line
+        dense
+        autofocus
+      ></v-select>
+      <div v-else>{{ props.item.status }}</div>
     </template>
 
     <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
-      <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+      <div v-if="editingItem == item.id">
+        <v-icon small class="mr-2" @click="editItem(item)">mdi-content-save</v-icon>
+      </div>
+      <div v-else>
+        <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+        <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+      </div>
     </template>
+    
   </v-data-table>
 </template>
 
@@ -45,9 +56,16 @@
 export default {
   name: "Orders",
   components: {},
-  methods: {},
+  methods: {
+    editItem: function(item) {
+      this.editingItem = this.editingItem != item.id ? item.id : -1;
+    },
+    deleteItem: function(item) {
+      console.log(item);
+    }
+  },
   data: () => ({
-    selected: [],
+    editingItem: -1,
     statuses: [
       "Pending",
       "Processing",
