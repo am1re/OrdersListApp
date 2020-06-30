@@ -3,7 +3,10 @@ import axios from 'axios';
 
 const config = {
   // baseURL: apiBaseUrl
-  baseURL: 'http://localhost:5000/api'
+  baseURL: 'http://localhost:5000/api',
+  headers: {
+    "Content-Type": "application/json, text/plain, */*"
+  }
 };
 
 const httpClient = axios.create(config);

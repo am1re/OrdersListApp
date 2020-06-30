@@ -10,7 +10,7 @@ export default {
             return state.products;
         },
         getById: state => id => {
-            return state.products.find(todo => todo.id === id);
+            return state.products.find(x => x.id === id);
         }
     },
     actions: {

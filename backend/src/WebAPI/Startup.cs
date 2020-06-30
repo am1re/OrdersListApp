@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using Application.Common.Behaviours;
 using Application.Common.Interfaces;
@@ -35,6 +36,16 @@ namespace WebAPI
             services.AddMediatR(typeof(RequestValidationBehavior<,>).Assembly);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowLocalhost",
+                    builder => builder
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .SetPreflightMaxAge(TimeSpan.FromDays(5)));
+            });
+            
             services
                 .AddControllers()
                 .AddNewtonsoftJson();
@@ -65,7 +76,7 @@ namespace WebAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseCors(b => b.AllowAnyOrigin());
+                app.UseCors("AllowLocalhost");
                 RegisteredServicesPage(app);
             }
             app.UseAppExceptionHandler();

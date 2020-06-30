@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
         }
         
         [HttpDelete("{id}/Items")]
-        public async Task<IActionResult> DeleteItemByOrderId(int id, [FromBody] DeleteOrderItemCommand command)
+        public async Task<IActionResult> DeleteItemByOrderId([FromRoute] int id, [FromBody] DeleteOrderItemCommand command)
         {
             command.OrderId = id;
             await Mediator.Send(command);

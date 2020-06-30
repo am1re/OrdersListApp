@@ -1,19 +1,25 @@
 import httpClient from '@/services/http-client'
 
-const processOrders = function(data, context){
-    data.forEach(order => {
+const insertProductDataIntoOrder = async function (data, dispatch, rootGetters) {
+    const process = function (order) {
         order.status = order.status.name
         order.total = 0
         order.orderItems.forEach(orderItem => {
             order.total += orderItem.productPrice
 
-            let product = context.rootGetters['products/getById'](orderItem.productId);
+            let product = rootGetters['products/getById'](orderItem.productId);
             orderItem.photoUrl = product.photoUrl;
             orderItem.name = product.name;
-        });
-    });
-    console.log(context)
-    return data;
+        })
+    }
+
+    await dispatch("products/fetchAll", null, { root: true })
+
+    if (Array.isArray(data))
+        data.forEach(order => process(order))
+    else process(data)
+
+    return data
 }
 
 export default {
@@ -27,36 +33,71 @@ export default {
         }
     },
     actions: {
-        fetchAll(context) {
-            return new Promise((resolve, reject) => {
-                httpClient.get('/orders?limit=100')
+        fetchAll({ dispatch, commit, rootGetters }) {
+            return httpClient.get('/orders?limit=100')
                 .then(async (response) => {
-                    await context.dispatch("products/fetchAll", null, { root: true })
-                    return processOrders(response.data.data, context)
+                    return await insertProductDataIntoOrder(response.data.data, dispatch, rootGetters)
                 })
                 .then(data => {
-                    context.commit('SET', data);
-                    resolve(data)
+                    commit('SET', data);
+                    return data
                 })
                 .catch(error => {
                     console.log(error);
-                    reject(error)
+                    return error
                 });
-            })
         },
-        // get(payload) {
-        //     return httpClient.get('/products/${payload.id}')
-        // },
+        updateItem({ dispatch, commit, rootGetters }, payload) {
+            payload.orderItems.forEach(async e => {
+                await httpClient.put(`/orders/${payload.id}/items`, e)
+                    .then((response) => {
+                        console.log(response)
+                    })
+            })
+
+            return httpClient.put(`/orders/${payload.id}`, payload)
+                .then(async (response) => {
+                    return await insertProductDataIntoOrder(response.data.data, dispatch, rootGetters)
+                })
+                .then((data) => {
+                    console.log(data)
+                    commit('updateItem', data);
+                });
+        },
+        deleteItem({ commit }, payload) {
+            httpClient.delete(`/orders/${payload.id}`, payload)
+                .then((response) => {
+                    if (response.status == 204)
+                        commit('REMOVE', payload.id);
+                })
+        },
+        deleteOrderItem({ commit }, payload) {
+            httpClient.delete(`/orders/${payload.orderId}/items`, { data: payload })
+                .then((response) => {
+                    if (response.status == 204)
+                        commit('removeOrderItem', payload.orderId, payload.productId);
+                })
+        },
     },
     mutations: {
         SET(state, payload) {
             state.orders = payload;
         },
+        updateItem(state, payload) {
+            let index = state.orders.findIndex(x => x.id === payload.id);
+            state.orders[index] = Object.assign(state.orders[index], payload)
+        },
+        REMOVE(state, id) {
+            let index = state.orders.findIndex(x => x.id === id);
+            state.orders.splice(index, 1);
+        },
+        removeOrderItem(state, orderId, productId) {
+            let index = state.orders.findIndex(x => x.id === orderId);
+            let index2 = state.orders[index].orderItems.findIndex(x => x.productId === productId)
+            state.orders[index].orderItems.splice(index2, 1);
+        },
         // ADD(state, payload) {
         //     state.products.push(payload);
         // },
-        // REMOVE(state, index) {
-        //     state.products.splice(index, 1);
-        // }
     }
 }
