@@ -22,20 +22,11 @@ export default {
             catch (err) {
                 throw new Error("Failed to fetch prodcuts from API!")
             }
-        },
-        // get(payload) {
-        //     return httpClient.get('/products/${payload.id}')
-        // },
+        }
     },
     mutations: {
         SET(state, payload) {
             state.products = payload;
-        },
-        // ADD(state, payload) {
-        //     state.products.push(payload);
-        // },
-        // REMOVE(state, index) {
-        //     state.products.splice(index, 1);
-        // }
+        }
     }
 }

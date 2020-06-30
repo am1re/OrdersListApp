@@ -17,7 +17,7 @@ export default {
         }
     },
     actions: {
-        async fetchAll({commit}) {
+        async fetchAll({ commit }) {
             try {
                 const response = await httpClient.get('/statuses?limit=100')
                 commit('SET', response.data.data);

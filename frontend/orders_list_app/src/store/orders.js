@@ -1,23 +1,30 @@
 import httpClient from '@/services/http-client'
 
+const insertProductDataIntoOrderItem = function (orderItem, rootGetters) {
+    let product = rootGetters['products/getById'](orderItem.productId);
+
+    orderItem.photoUrl = product.photoUrl;
+    orderItem.name = product.name;
+
+    return orderItem;
+}
+
 const insertProductDataIntoOrder = async function (data, dispatch, rootGetters) {
-    const process = function (order) {
+    const process = function (order, rootGetters) {
         order.status = order.status.name
         order.total = 0
         order.orderItems.forEach(orderItem => {
             order.total += orderItem.productPrice * orderItem.quantity
 
-            let product = rootGetters['products/getById'](orderItem.productId);
-            orderItem.photoUrl = product.photoUrl;
-            orderItem.name = product.name;
+            insertProductDataIntoOrderItem(orderItem, rootGetters)
         })
     }
 
     await dispatch("products/fetchAll", null, { root: true })
 
     if (Array.isArray(data))
-        data.forEach(order => process(order))
-    else process(data)
+        data.forEach(order => process(order, rootGetters))
+    else process(data, rootGetters)
 
     return data
 }
@@ -30,7 +37,10 @@ export default {
     getters: {
         getAll(state) {
             return state.orders;
-        }
+        },
+        getById: state => id => {
+            return state.orders.find(x => x.id === id);
+        },
     },
     actions: {
         async fetchAll({ commit, dispatch, rootGetters }) {
@@ -87,6 +97,25 @@ export default {
                 commit('addItem', data);
             }
             catch (err) {
+                throw new Error("Failed to add order!");
+            }
+        },
+        async addOrderItem({ dispatch, commit, rootGetters, getters }, payload) { // TODO: i'm sorry for that
+            try {
+                await dispatch("products/fetchAll", null, { root: true })
+
+                const response = await httpClient.post(`/orders/${payload.orderId}/items`, payload)
+                const dataOrderItem = insertProductDataIntoOrderItem(response.data.data, rootGetters)
+                commit('addOrderItem', dataOrderItem);
+
+                // const order = getters.getById(payload.orderId);
+                const responseOrder = await httpClient.get(`/orders/${payload.orderId}`)
+                const order = responseOrder.data.data;
+
+                const data = await insertProductDataIntoOrder(order, dispatch, rootGetters)
+                commit('updateItem', data);
+            }
+            catch (err) {
                 throw new Error("Failed to add order item!");
             }
         },
@@ -110,6 +139,10 @@ export default {
         },
         addItem(state, payload) {
             state.orders.push(payload);
+        },
+        addOrderItem(state, payload) {
+            let orderIndex = state.orders.findIndex(x => x.id === payload.orderId);
+            state.orders[orderIndex].orderItems.push(payload);
         },
     }
 }
