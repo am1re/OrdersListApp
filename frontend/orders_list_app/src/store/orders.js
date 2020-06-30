@@ -79,7 +79,16 @@ export default {
             catch (err) {
                 throw new Error("Failed to delete order item!");
             }
-
+        },
+        async addItem({ dispatch, commit, rootGetters }, payload) {
+            try {
+                const response = await httpClient.post('/orders', payload)
+                const data = await insertProductDataIntoOrder(response.data.data, dispatch, rootGetters)
+                commit('addItem', data);
+            }
+            catch (err) {
+                throw new Error("Failed to add order item!");
+            }
         },
     },
     mutations: {
@@ -99,8 +108,8 @@ export default {
             let orderItemIndex = state.orders[orderIndex].orderItems.findIndex(x => x.productId === productId)
             state.orders[orderIndex].orderItems.splice(orderItemIndex, 1);
         },
-        // ADD(state, payload) {
-        //     state.products.push(payload);
-        // },
+        addItem(state, payload) {
+            state.orders.push(payload);
+        },
     }
 }
