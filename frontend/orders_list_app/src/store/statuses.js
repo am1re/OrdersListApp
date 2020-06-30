@@ -17,14 +17,14 @@ export default {
         }
     },
     actions: {
-        fetchAll(context) {
-            return httpClient.get('/statuses?limit=100')
-                .then(response => {
-                    context.commit('SET', response.data.data);
-                })
-                .catch(error => {
-                    console.log(error);
-                })
+        async fetchAll({commit}) {
+            try {
+                const response = await httpClient.get('/statuses?limit=100')
+                commit('SET', response.data.data);
+            }
+            catch (err) {
+                throw new Error("Failed to fetch order statuses from API!")
+            }
         }
     },
     mutations: {

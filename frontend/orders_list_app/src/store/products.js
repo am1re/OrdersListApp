@@ -14,18 +14,14 @@ export default {
         }
     },
     actions: {
-        fetchAll(context) {
-            return new Promise((resolve, reject) => {
-                httpClient.get('/products?limit=100')
-                    .then(response => {
-                        context.commit('SET', response.data.data);
-                        resolve(response.data.data)
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        reject(error);
-                    });
-            })
+        async fetchAll(context) {
+            try {
+                const response = await httpClient.get('/products?limit=100')
+                context.commit('SET', response.data.data);
+            }
+            catch (err) {
+                throw new Error("Failed to fetch prodcuts from API!")
+            }
         },
         // get(payload) {
         //     return httpClient.get('/products/${payload.id}')
